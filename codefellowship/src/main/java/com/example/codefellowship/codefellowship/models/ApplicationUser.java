@@ -20,10 +20,10 @@ public class ApplicationUser implements UserDetails {
     private String bio;
 
     @Column(unique = true)
-    private String userName;
+    private String username;
 
-    public ApplicationUser(String userName,String password, String firstName, String lastName, String dateOfBirth, String bio ) {
-        this.userName = userName;
+    public ApplicationUser(String username, String password, String firstName, String lastName, String dateOfBirth, String bio ) {
+        this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -56,8 +56,8 @@ public class ApplicationUser implements UserDetails {
         this.bio = bio;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String userName) {
+        this.username = userName;
     }
 
     public String getFirstName() {
@@ -76,8 +76,8 @@ public class ApplicationUser implements UserDetails {
         return bio;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
     public Long getId() {
@@ -90,15 +90,11 @@ public class ApplicationUser implements UserDetails {
         return null;
     }
 
-    @Override
+
     public String getPassword() {
-        return null;
+        return password;
     }
 
-    @Override
-    public String getUsername() {
-        return null;
-    }
 
     @Override
     public boolean isAccountNonExpired() {
@@ -124,7 +120,7 @@ public class ApplicationUser implements UserDetails {
     public String toString() {
         return "ApplicationUser{" +
                 "id=" + id +
-                ", userName='" + userName + '\'' +
+                ", userName='" + username + '\'' +
                 '}';
     }
 }
