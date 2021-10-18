@@ -5,3 +5,4 @@
 - create a post route to signup route to add user info.
 - create a profile route to preview the user info after login.
 - create a user/id route to preview specigific user info.
+- create a addPost route that can added a new post for any user.

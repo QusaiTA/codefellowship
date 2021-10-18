@@ -10,7 +10,16 @@
 <h3> Bio : <span th:text="${username.bio}"></span> </h3>
 
 <img src="https://image.shutterstock.com/image-photo/portrait-sad-man-black-white-260nw-1901205745.jpg"  width="155">
+<ul th:each="post : ${username.getPosts()}">
+    <li>
+        My Posts
+    </li>
+   Text : <li th:text="${post.getBody()}">
 
-</div>
+    </li>
+
+    At Time : <li th:text="${post.getTimeStamp()}">  </li>
+</ul>
+
 </body>
 </html>

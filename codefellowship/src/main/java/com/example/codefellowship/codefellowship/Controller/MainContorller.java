@@ -2,7 +2,9 @@ package com.example.codefellowship.codefellowship.Controller;
 
 
 import com.example.codefellowship.codefellowship.models.ApplicationUser;
+import com.example.codefellowship.codefellowship.models.Post;
 import com.example.codefellowship.codefellowship.repository.ApplicationUserRepository;
+import com.example.codefellowship.codefellowship.repository.PostRepsitory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,13 +20,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.security.Principal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 @Controller
 public class MainContorller {
 
     @Autowired
     ApplicationUserRepository applicationUserRepository;
+    @Autowired
+    PostRepsitory postRepsitory;
     @Autowired
     BCryptPasswordEncoder encoder;
 
@@ -44,8 +51,11 @@ public class MainContorller {
         Authentication authentication= new UsernamePasswordAuthenticationToken(newUser,null,new ArrayList<>());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return new RedirectView("/login");
+        return new RedirectView("/profile");
     }
+
+//    @GetMapping("/signup")
+
 
     @GetMapping("/profile")
     public String getProfilePage(Model model , Principal principal) {
@@ -54,14 +64,28 @@ public class MainContorller {
         return "profile";
     }
 
-    @GetMapping(value = "users/{id}")
-    public String getUserData(@PathVariable Long id,Model model) {
+    @GetMapping("users/{id}")
+    public RedirectView getUserData(@PathVariable Long id,Model model) {
         ApplicationUser user = applicationUserRepository.findApplicationUserById(id);
-        model.addAttribute("user",user);
+        model.addAttribute("username",user);
 
-        return "/users";
+        return new RedirectView("/profile");
     }
+   @GetMapping("/addPost")
+   public String createNewPost(){
+        return "addPost";
+   }
 
+    @PostMapping("/addPost")
+    public RedirectView newPost(Model model, Principal principal, String body){
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        Date date = new Date();
+        ApplicationUser newPost = applicationUserRepository.findApplicationUserByUsername(principal.getName());
+        Post post = new Post(body,date,newPost);
+        postRepsitory.save(post);
+        model.addAttribute("posts", newPost.getPosts());
+        return new RedirectView("/profile");
+    }
 
 
 
