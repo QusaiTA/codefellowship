@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div th:each="user:${following}">
+    <div th:each="post : ${user.posts}"  class="card text-white bg-danger  mb-3" style="max-width: 50rem;margin-left:10px">
+        <div  style="max-width: 50rem; font-size:20px">Post form:<span th:text="${user.username}"></span></div>
+        <div >
+            <p style="padding:50px; margin-top:20px" class="card-text" th:text="${post.body}"></p>
+            <p style="padding:50px; margin-top:20px" class="card-text" th:text="${post.timeStamp}"></p>
+<!--            <button><a class="nav-link" th:href="'/profile/'+${user.id}">Go To Profile</a></button>-->
+        </div>
+    </div>
+</div>
+</div>
+
+</body>
+</html>

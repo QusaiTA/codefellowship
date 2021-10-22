@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div th:each="pro:${users}" th:if="${pro.id}!=${actual}"  class="card" style="width: 18rem; background-color:gray ;padding:10px;margin:5px" >
+  <img  src="https://icon-library.com/images/user-icon-image/user-icon-image-22.jpg" alt="Card image cap">
+  <div >
+    <h2>User Name: <span th:text="${pro.username}"></span></h2>
+    <p>First name: <span th:text="${pro.firstName}"></span></span></p>
+    <p>Last name: <span th:text="${pro.lastName}"></span></span></p>
+    <p>Date Of Birth: <span th:text="${pro.dateOfBirth}"></span></p>
+    <p>Bio: <span th:text="${pro.bio}"></span></p>
+    <a th:href="'/users/'+${actual}">see profile</a>
+    <br>
+  </div>
+
+
+
+<form method="post" th:action="@{'/follow/'+${pro.id}}">
+  <button class="btn btn-danger" th:if="${myFollowers.contains(pro) != true and username.username != pro.username}" type="submit">Follow</button>
+</form>
+</div>
+
+</body>
+</html>
