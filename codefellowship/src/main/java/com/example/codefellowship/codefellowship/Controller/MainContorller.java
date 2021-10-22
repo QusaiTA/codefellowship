@@ -9,14 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.security.Principal;
@@ -24,6 +22,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @Controller
 public class MainContorller {
@@ -54,9 +54,6 @@ public class MainContorller {
         return new RedirectView("/profile");
     }
 
-//    @GetMapping("/signup")
-
-
     @GetMapping("/profile")
     public String getProfilePage(Model model , Principal principal) {
         ApplicationUser applicationUser = applicationUserRepository.findApplicationUserByUsername(principal.getName());
@@ -65,11 +62,11 @@ public class MainContorller {
     }
 
     @GetMapping("users/{id}")
-    public RedirectView getUserData(@PathVariable Long id,Model model) {
+    public String getUserData(@PathVariable Long id,Model model) {
         ApplicationUser user = applicationUserRepository.findApplicationUserById(id);
         model.addAttribute("username",user);
 
-        return new RedirectView("/profile");
+        return "profile";
     }
    @GetMapping("/addPost")
    public String createNewPost(){
@@ -85,6 +82,42 @@ public class MainContorller {
         postRepsitory.save(post);
         model.addAttribute("posts", newPost.getPosts());
         return new RedirectView("/profile");
+    }
+
+    @PostMapping("/follow/{id}")
+    public RedirectView follow(Principal p,@PathVariable (value = "id")Long id){
+        ApplicationUser myFollower=applicationUserRepository.findApplicationUserByUsername(p.getName());
+        ApplicationUser following=applicationUserRepository.findById(id).get();
+
+        myFollower.getFollowing().add(following);
+        following.getFollowers().add(myFollower);
+        applicationUserRepository.save(myFollower);
+        applicationUserRepository.save(following);
+        return new RedirectView("/feed");
+
+    }
+
+//    @GetMapping ("/feed" , RequestMethod.GET)
+    @RequestMapping(value = "/feed", method = RequestMethod.GET)
+    public String feed(Principal principal,Model model){
+        ApplicationUser myfeed=applicationUserRepository.findApplicationUserByUsername(principal.getName());
+        Set<ApplicationUser> following=myfeed.getFollowing();
+        model.addAttribute("following",following);
+        model.addAttribute("username",myfeed.getUsername());
+        return "feed";
+    }
+    @GetMapping("/findfollowers")
+    public String findfollowers(Model model,Principal principal){
+        List<ApplicationUser> allUsers=applicationUserRepository.findAll();
+        ApplicationUser myfeed=applicationUserRepository.findApplicationUserByUsername(principal.getName());
+        Set<ApplicationUser> following=myfeed.getFollowing();
+        model.addAttribute("actual",applicationUserRepository.findApplicationUserByUsername(principal.getName()).getId());
+        model.addAttribute("users",allUsers);
+        model.addAttribute("myFollowers",following);
+        model.addAttribute("username",myfeed);
+
+
+        return "searchUsers";
     }
 
 
